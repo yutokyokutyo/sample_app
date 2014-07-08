@@ -39,4 +39,7 @@ RSpec.configure do |config|
   # the seed, which is printed after each run.
   #     --seed 1234
   config.order = "random"
+  
+  # This file is copied to spec/ when you run 'rails generate rspec:install'
+  config.include Capybara::DSL
 end
