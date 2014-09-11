@@ -2,7 +2,7 @@ class UsersController < ApplicationController
   before_action :signed_in_user, only: [:index, :edit, :update, :destroy]
   before_action :correct_user,   only: [:edit, :update]
   before_action :admin_user,     only: :destroy
-  before_action :signed_in_dummyuser, only: [:new, :create]
+  before_action :redirect_for_signed_in_user, only: [:new, :create]
   
   def index
     @users = User.paginate(page: params[:page])
@@ -16,7 +16,7 @@ class UsersController < ApplicationController
     @user = User.new
   end
 
-  def create    
+  def create
     @user = User.new(user_params)
     if @user.save
       sign_in @user
@@ -54,9 +54,9 @@ class UsersController < ApplicationController
 
     # Before filters
    
-    def signed_in_dummyuser
+    def redirect_for_signed_in_user
       if signed_in?
-        redirect_to(root_url) 
+        redirect_to(root_url)
       end
     end
 
