@@ -52,6 +52,17 @@ describe "User pages" do
     end
   end
 
+  describe "prevent admin users from destroying themselves." do
+    let(:admin) { FactoryGirl.create(:admin) }
+
+    before { sign_in admin, no_capybara: true }
+
+    describe "submitting a DELETE request to the Users#destroy action" do
+      before { delete user_path(admin) }
+      specify { expect(response).to redirect_to(root_url) }
+    end
+  end
+
   describe "profile page" do
     let(:user) { FactoryGirl.create(:user) }
     before { visit user_path(user) }
