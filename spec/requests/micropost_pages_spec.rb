@@ -48,7 +48,7 @@ describe "Micropost pages" do
       sign_in user
       visit users_path
     end
-    before(:all) { 30.times { FactoryGirl.create(:user) } }
+    before(:all) { 30.times { FactoryGirl.create(:micropost) } }
     after(:all)  { Micropost.delete_all }
 
     it { should have_selector('div.pagination') }
