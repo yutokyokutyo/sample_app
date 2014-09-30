@@ -48,6 +48,23 @@ describe "Micropost pages" do
       visit root_path
     end
 
+    context "ページあたりに表示する件数以上のレコードがある場合" do
+      let!(:micropost) { 50.times { FactoryGirl.create(:micropost, user: user ) } }
+      before do
+        visit root_path
+      end
+
+      it { should have_selector('div.pagination') }
+
+      it "ページ毎に microost が存在する" do
+        user.microposts.paginate(page: 1).each do |micropost|
+         expect(page).to have_selector('li', text: micropost.content )
+        end
+        user.microposts.paginate(page: 2).each do |micropost|
+         expect(page).to have_selector('li', text: micropost.content )
+        end
+      end
+    end
 
     context "ページネーションのしきい値の場合 " do
       let!(:micropost) { 30.times { FactoryGirl.create(:micropost) } }
