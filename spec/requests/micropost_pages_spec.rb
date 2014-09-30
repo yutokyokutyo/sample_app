@@ -44,18 +44,28 @@ describe "Micropost pages" do
   end
 
   describe "pagination" do
-    before(:each) do
-      sign_in user
-      visit users_path
+    before do
+      visit root_path
     end
-    before(:all) { 30.times { FactoryGirl.create(:micropost) } }
-    after(:all)  { Micropost.delete_all }
 
-    it { should have_selector('div.pagination') }
 
-    it "should list each microposts" do
-      user.microposts.paginate(page: 1).each do |micropost|
-        expect(page).to have_selector('li', text: micropost.content )
+    context "ページネーションのしきい値の場合 " do
+      let!(:micropost) { 30.times { FactoryGirl.create(:micropost) } }
+
+      it "２ページ目に micropost が存在しない" do
+        user.microposts.paginate(page: 2).each do |micropost|
+         expect(page).to have_not_selector('li', text: micropost.content )
+        end
+      end
+    end
+
+    context "ページネーションのしきい値に＋１した場合" do
+      let!(:micropost) { 31.times { FactoryGirl.create(:micropost) } }
+
+      it "２ページ目に micropost が存在する" do
+        user.microposts.paginate(page: 2).each do |micropost|
+          expect(page).to have_selector('li', text: micropost.content )
+        end
       end
     end
   end
