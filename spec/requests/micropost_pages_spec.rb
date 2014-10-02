@@ -44,45 +44,50 @@ describe "Micropost pages" do
   end
 
   describe "pagination" do
-    before do
-      visit root_path
+
+    context "When number of micropost be the same as the threshold of pagination" do
+      let!(:Micropost) { 30.times { FactoryGirl.create(:micropost, user: user ) } }
+
+      before do
+        visit user_path(user)
+      end
+
+      it "Micropost is displayed on the first page" do
+        user.microposts.paginate(page: 1).each do |micropost|
+          expect(page).to have_selector('span', text: micropost.content )
+        end
+      end
+
+      it { should_not have_selector('div.pagination') }
     end
 
-    context "ページあたりに表示する件数以上のレコードがある場合" do
-      let!(:micropost) { 50.times { FactoryGirl.create(:micropost, user: user ) } }
+    context "When there is a Micropost +1 threshold of pagination" do
+      let!(:Micropost) { 31.times { FactoryGirl.create(:micropost, user: user ) } }
+
       before do
-        visit root_path
+        visit user_path(user)
       end
 
       it { should have_selector('div.pagination') }
 
-      it "ページ毎に microost が存在する" do
+      it "Micropost is displayed on the first page" do
         user.microposts.paginate(page: 1).each do |micropost|
-         expect(page).to have_selector('li', text: micropost.content )
-        end
-        user.microposts.paginate(page: 2).each do |micropost|
-         expect(page).to have_selector('li', text: micropost.content )
+          expect(page).to have_selector('span', text: micropost.content )
         end
       end
-    end
 
-    context "ページネーションのしきい値の場合 " do
-      let!(:micropost) { 30.times { FactoryGirl.create(:micropost) } }
+      it "Can move to next page" do
+        click_link('2')
+      end
 
-      it "２ページ目に micropost が存在しない" do
+      it "Micropost is displayed on the second page" do
         user.microposts.paginate(page: 2).each do |micropost|
-         expect(page).to have_not_selector('li', text: micropost.content )
+          expect(page).to have_selector('span', text: micropost.content )
         end
       end
-    end
 
-    context "ページネーションのしきい値に＋１した場合" do
-      let!(:micropost) { 31.times { FactoryGirl.create(:micropost) } }
-
-      it "２ページ目に micropost が存在する" do
-        user.microposts.paginate(page: 2).each do |micropost|
-          expect(page).to have_selector('li', text: micropost.content )
-        end
+      it "Can move to previous page" do
+        click_link('1')
       end
     end
   end
