@@ -1,7 +1,6 @@
-def calcBmi(weight, height)
-  return weight / (height * height)
-end
+#!/usr/bin/ruby
 
+require './utility.rb'
 puts "あなたの体重は何ですか？"
 weight = gets.to_i
 puts "あなたの身長は何ですか？"
