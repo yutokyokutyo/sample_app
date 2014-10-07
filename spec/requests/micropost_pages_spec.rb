@@ -32,9 +32,11 @@ describe "Micropost pages" do
   end
 
   describe "Sidebar micropost counts" do
+    let(:micropost_first){ 1 }
+
     context "Micropost when the singular" do
-      let!(:Micropost) { 1.times { FactoryGirl.create(:micropost, user: user ) } }
       before do
+        FactoryGirl.create_list(:micropost, micropost_first, user: user)
         visit root_path
       end
 
@@ -43,8 +45,8 @@ describe "Micropost pages" do
     end
 
     context "When formed into plurality of microposts" do
-      let!(:Micropost) { 2.times { FactoryGirl.create(:micropost, user: user ) } }
       before do
+        FactoryGirl.create_list(:micropost, micropost_first + 1, user: user)
         visit root_path
       end
 
