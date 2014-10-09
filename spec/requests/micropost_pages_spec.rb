@@ -41,4 +41,25 @@ describe "Micropost pages" do
       end
     end
   end
+
+  describe "Current user can not see the delete link of micropost other users" do
+    context "Micropost of the current user display delete link" do
+      before do
+        FactoryGirl.create(:micropost, user: user)
+        visit user_path(user)
+      end
+
+      it { should have_link('delete') }
+    end
+
+    context "Micropost of the other user display without delete link" do
+      let(:other) { FactoryGirl.create(:user) }
+      before do
+        FactoryGirl.create(:micropost, user: other)
+        visit user_path(other)
+      end
+
+      it { should_not have_link('delete') }
+    end
+  end
 end
