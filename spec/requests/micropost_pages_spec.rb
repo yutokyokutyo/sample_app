@@ -30,6 +30,29 @@ describe "Micropost pages" do
     end
   end
 
+  describe "Microposts count in the sidebar" do
+
+    context "When user has only one micropost" do
+      before do
+        FactoryGirl.create(:micropost, user: user)
+        visit root_path
+      end
+
+      it { should have_selector('aside.span4 span', text: user.microposts.count ) }
+      it { should have_selector('aside.span4 span', text: "micropost") }
+    end
+
+    context "When user has plural microposts" do
+      before do
+        2.times { FactoryGirl.create(:micropost, user: user) }
+        visit root_path
+      end
+
+      it { should have_selector('aside.span4 span', text: user.microposts.count ) }
+      it { should have_selector('aside.span4 span', text: "microposts") }
+    end
+  end
+
   describe "micropost destruction" do
     before { FactoryGirl.create(:micropost, user: user) }
 
