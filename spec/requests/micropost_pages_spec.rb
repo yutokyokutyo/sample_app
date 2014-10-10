@@ -31,12 +31,11 @@ describe "Micropost pages" do
     end
   end
 
-  describe "Sidebar micropost counts" do
-    let(:micropost_first){ 1 }
+  describe "Microposts count in the sidebar" do
 
-    context "Micropost when the singular" do
+    context "When user has only one micropost" do
       before do
-        FactoryGirl.create_list(:micropost, micropost_first, user: user)
+        FactoryGirl.create(:micropost, user: user)
         visit root_path
       end
 
@@ -44,9 +43,9 @@ describe "Micropost pages" do
       it { should have_selector('aside.span4 span', text: "micropost") }
     end
 
-    context "When formed into plurality of microposts" do
+    context "When user has plural microposts" do
       before do
-        FactoryGirl.create_list(:micropost, micropost_first + 1, user: user)
+        2.times { FactoryGirl.create(:micropost, user: user) }
         visit root_path
       end
 
