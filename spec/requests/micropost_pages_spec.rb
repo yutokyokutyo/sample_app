@@ -44,50 +44,36 @@ describe "Micropost pages" do
   end
 
   describe "pagination" do
+    let(:pagenation_threshold) { 30 }
 
     context "When number of micropost be the same as the threshold of pagination" do
-      let!(:Micropost) { 30.times { FactoryGirl.create(:micropost, user: user ) } }
-
       before do
+        FactoryGirl.create_list(:micropost, pagenation_threshold, user: user )
         visit user_path(user)
       end
 
       it "Micropost is displayed on the first page" do
-        user.microposts.paginate(page: 1).each do |micropost|
-          expect(page).to have_selector('span', text: micropost.content )
-        end
+        expect(page).to     have_selector('ol.microposts li', count: 30)
+        expect(page).not_to have_selector('div.pagination')
       end
-
-      it { should_not have_selector('div.pagination') }
     end
 
     context "When there is a Micropost +1 threshold of pagination" do
-      let!(:Micropost) { 31.times { FactoryGirl.create(:micropost, user: user ) } }
-
       before do
+        FactoryGirl.create_list(:micropost, pagenation_threshold + 1, user: user )
         visit user_path(user)
       end
 
-      it { should have_selector('div.pagination') }
-
       it "Micropost is displayed on the first page" do
-        user.microposts.paginate(page: 1).each do |micropost|
-          expect(page).to have_selector('span', text: micropost.content )
-        end
-      end
-
-      it "Can move to next page" do
-        click_link('2')
+        expect(page).to have_selector('ol.microposts li', count: 30)
+        expect(page).to have_selector('div.pagination')
+        expect(page).to have_selector('li.active', text: '1')
       end
 
       it "Micropost is displayed on the second page" do
-        user.microposts.paginate(page: 2).each do |micropost|
-          expect(page).to have_selector('span', text: micropost.content )
-        end
-      end
-
-      it "Can move to previous page" do
-        click_link('1')
+        click_link('2')
+        expect(page).to have_selector('ol.microposts li', count: 1)
+        expect(page).to have_selector('li.active', text: '2')
       end
     end
   end
