@@ -65,24 +65,38 @@ describe "Micropost pages" do
     end
   end
 
-  describe "Current user can not see the delete link of micropost other users" do
-    context "Micropost of the current user display delete link" do
+  describe "pagination" do
+    let(:pagenation_threshold) { 30 }
+
+    context "When number of micropost be the same as the threshold of pagination" do
       before do
-        FactoryGirl.create(:micropost, user: user)
+        FactoryGirl.create_list(:micropost, pagenation_threshold, user: user )
         visit user_path(user)
       end
 
-      it { should have_link('delete') }
+      it "Micropost is displayed on the first page" do
+        expect(page).to     have_selector('ol.microposts li', count: 30)
+        expect(page).not_to have_selector('div.pagination')
+      end
     end
 
-    context "Micropost of the other user display without delete link" do
-      let(:other) { FactoryGirl.create(:user) }
+    context "When there is a Micropost +1 threshold of pagination" do
       before do
-        FactoryGirl.create(:micropost, user: other)
-        visit user_path(other)
+        FactoryGirl.create_list(:micropost, pagenation_threshold + 1, user: user )
+        visit user_path(user)
       end
 
-      it { should_not have_link('delete') }
+      it "Micropost is displayed on the first page" do
+        expect(page).to have_selector('ol.microposts li', count: 30)
+        expect(page).to have_selector('div.pagination')
+        expect(page).to have_selector('li.active', text: '1')
+      end
+
+      it "Micropost is displayed on the second page" do
+        click_link('2')
+        expect(page).to have_selector('ol.microposts li', count: 1)
+        expect(page).to have_selector('li.active', text: '2')
+      end
     end
   end
 end
