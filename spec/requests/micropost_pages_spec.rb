@@ -15,7 +15,6 @@ describe "Micropost pages" do
       it "should not create a micropost" do
         expect { click_button "Post" }.not_to change(Micropost, :count)
       end
-
       describe "error messages" do
         before { click_button "Post" }
         it { should have_content('error') }
@@ -28,6 +27,29 @@ describe "Micropost pages" do
       it "should create a micropost" do
         expect { click_button "Post" }.to change(Micropost, :count).by(1)
       end
+    end
+  end
+
+  describe "Microposts count in the sidebar" do
+
+    context "When user has only one micropost" do
+      before do
+        FactoryGirl.create(:micropost, user: user)
+        visit root_path
+      end
+
+      it { should have_selector('aside.span4 span', text: user.microposts.count ) }
+      it { should have_selector('aside.span4 span', text: "micropost") }
+    end
+
+    context "When user has plural microposts" do
+      before do
+        2.times { FactoryGirl.create(:micropost, user: user) }
+        visit root_path
+      end
+
+      it { should have_selector('aside.span4 span', text: user.microposts.count ) }
+      it { should have_selector('aside.span4 span', text: "microposts") }
     end
   end
 
