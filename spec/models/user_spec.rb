@@ -176,6 +176,37 @@ describe User do
     end
   end
 
+  describe "dependent::destroy"  do
+    let(:other_user) { FactoryGirl.create(:user) }
+    before do
+      @user.save
+    end
+
+    context "When following other_user" do
+      it "Relationship record should also delete When deleted other_user" do
+        @user.follow!(other_user)
+        followed_users = @user.followed_users.to_a
+        other_user.destroy
+        expect(followed_users).not_to be_empty
+        followed_users.each do |followed|
+          expect(Relationship.where(followed_id: followed.id )).to be_empty
+        end
+      end
+    end
+
+    context "When following other_user" do
+      it "reverce Relationship record should also delete When deleted other_user" do
+        other_user.follow!(@user)
+        followers = @user.followers.to_a
+        other_user.destroy
+        expect(followers).not_to be_empty
+        followers.each do |follower|
+          expect(Relationship.where(follower_id: follower.id )).to be_empty
+        end
+      end
+    end
+  end
+
   describe "following" do
     let(:other_user) { FactoryGirl.create(:user) }
     before do
