@@ -194,7 +194,7 @@ describe User do
       end
     end
 
-    context "When following other_user" do
+    context "When followed by other_user" do
       it "reverce Relationship record should also delete When deleted other_user" do
         other_user.follow!(@user)
         followers = @user.followers.to_a
