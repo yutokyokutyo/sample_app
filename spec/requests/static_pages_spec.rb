@@ -45,6 +45,19 @@ describe "Static pages" do
     end
   end
 
+  describe "follower/following counts about Profile page" do
+    let(:user) { FactoryGirl.create(:user) }
+    let(:other_user) { FactoryGirl.create(:user) }
+    before do
+      sign_in user
+      other_user.follow!(user)
+      visit user_path(user)
+    end
+
+    it { should have_link("0 following", href: following_user_path(user)) }
+    it { should have_link("1 followers", href: followers_user_path(user)) }
+  end
+
   describe "Help page" do
     before { visit help_path }
 
