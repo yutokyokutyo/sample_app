@@ -4,7 +4,7 @@
     <section>
       <h1>
         <%= gravatar_for @user %>
-        <%= wrap(@user.name) %>
+        <%= render 'shared/name_info', object: @user %>
       </h1>
     </section>
     <section>
