@@ -1,4 +1,4 @@
 <h1>
- <%= gravatar_for @user %>
- <%= wrap(@user.name) %>
+ <%= link_to gravatar_for(object, size: 52), object %>
+ <%= wrap(object.name) %>
 </h1>

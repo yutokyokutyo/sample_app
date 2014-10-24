@@ -2,9 +2,7 @@
 <div class="row">
   <aside class="span4">
     <section>
-      <h1>
-        <%= render 'shared/gravatar_name_info' %>
-      </h1>
+      <%= render 'shared/gravatar_name_info', object: @user %>
     </section>
     <section>
       <%= render 'shared/stats' %>
